@@ -6,6 +6,8 @@ import React from 'react';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
@@ -44,14 +46,14 @@ export class QrScannerScreen extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <View style={{ flex: 1, backgroundColor: this.props.screenProps.theme.backgroundColour }}>
                 <QRCodeScanner
                     onRead={(code) => {
                         this.props.navigation.goBack();
                         this.props.navigation.state.params.setAddress(code.data);
                     }}
-                    cameraProps={{ captureAudio: false }}
+                    cameraProps={{captureAudio: false}}
                 />
             </View>
         );
@@ -64,7 +66,7 @@ class AmountInput extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <Input
                 containerStyle={{
                     width: '90%',
@@ -102,7 +104,7 @@ class AmountInput extends React.Component {
 }
 
 const CrossIcon = passMeFurther => (
-    <HeaderButton {...passMeFurther} IconComponent={AntDesign} iconSize={23} color='red' />
+    <HeaderButton {...passMeFurther} IconComponent={AntDesign} iconSize={23} color='red'/>
 );
 
 class CrossButton extends React.Component {
@@ -111,7 +113,7 @@ class CrossButton extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <HeaderButtons HeaderButtonComponent={CrossIcon}>
                 <Item
                     title=''
@@ -164,7 +166,7 @@ export class TransferScreen extends React.Component {
         return {
             title: '',
             headerRight: (
-                <CrossButton navigation={navigation} />
+                <CrossButton navigation={navigation}/>
             ),
         }
     };
@@ -184,6 +186,7 @@ export class TransferScreen extends React.Component {
             youSendAmountCurrency: '',
             recipientGetsAmount: '',
             recipientGetsAmountCurrency: '',
+            useTRTLValue: true,
             feeInfo: {},
         }
     }
@@ -222,10 +225,12 @@ export class TransferScreen extends React.Component {
             result = feeInfo.remaining;
         }
 
+        console.log(Number(result) * Globals.coinPrice[Globals.preferences.currency]);
+
         this.setState({
             recipientGetsAmount: result,
-            youSendAmountCurrency: (parseFloat(amount) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
-            recipientGetsAmountCurrency: (parseFloat(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
+            youSendAmountCurrency: (Number(amount) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
+            recipientGetsAmountCurrency: (Number(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
             feeInfo,
         }, () => { this.checkErrors(this.state.recipientGetsAmount) });
     }
@@ -245,10 +250,12 @@ export class TransferScreen extends React.Component {
             result = feeInfo.original;
         }
 
+        console.log((Number(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8));
+
         this.setState({
             youSendAmount: result,
-            youSendAmountCurrency: (parseFloat(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
-            recipientGetsAmountCurrency: (parseFloat(amount) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
+            youSendAmountCurrency: (Number(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
+            recipientGetsAmountCurrency: (Number(amount) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
             feeInfo
         }, () => { this.checkErrors(this.state.youSendAmount) });
     }
@@ -262,8 +269,8 @@ export class TransferScreen extends React.Component {
     }
 
     render() {
-        return (
-            <ScrollView style={{
+        return(
+            <View style={{
                 backgroundColor: this.props.screenProps.theme.backgroundColour,
                 flex: 1,
             }}>
@@ -284,11 +291,11 @@ export class TransferScreen extends React.Component {
                         How much {Config.coinName} do you want to send?
                     </Text>
 
-
                     <AmountInput
                         label={'You send'}
-                        value={this.state.youSendAmount}
+                        value={this.state.useTRTLValue ? this.state.youSendAmount : this.state.youSendAmountCurrency}
                         onChangeText={(text) => {
+                            text = this.state.useTRTLValue ? text : (Number(text) / Globals.coinPrice[Globals.preferences.currency]).toFixed(2);
                             this.setState({
                                 youSendAmount: text,
                             });
@@ -299,32 +306,15 @@ export class TransferScreen extends React.Component {
                         }}
                         errorMessage={this.state.errMsg}
                         marginBottom={40}
-                        currency={Config.ticker}
-                        {...this.props}
-                    />
-
-                    <AmountInput
-                        label={'You send in ' + Globals.preferences.currency.toUpperCase()}
-                        value={this.state.youSendAmountCurrency}
-                        onChangeText={(text) => {
-                            text = (parseFloat(text) / Globals.coinPrice[Globals.preferences.currency]).toFixed(2);
-                            this.setState({
-                                youSendAmount: text,
-                            });
-
-                            this.convertSentToReceived(text);
-                            this.checkErrors(text);
-                        }}
-                        currency={Globals.preferences.currency.toUpperCase()}
-                        errorMessage={this.state.errMsg}
-                        marginBottom={40}
+                        currency={this.state.useTRTLValue ? Config.ticker : Globals.preferences.currency.toUpperCase()}
                         {...this.props}
                     />
 
                     <AmountInput
                         label={'Recipient gets'}
-                        value={this.state.recipientGetsAmount}
+                        value={this.state.useTRTLValue ? this.state.recipientGetsAmount : this.state.recipientGetsAmountCurrency}
                         onChangeText={(text) => {
+                            text = this.state.useTRTLValue ? text : (Number(text) / Globals.coinPrice[Globals.preferences.currency]).toFixed(2);
                             this.setState({
                                 recipientGetsAmount: text,
                             });
@@ -333,24 +323,35 @@ export class TransferScreen extends React.Component {
                             this.checkErrors(text);
                         }}
                         marginBottom={40}
-                        currency={Config.ticker}
+                        currency={this.state.useTRTLValue ? Config.ticker : Globals.preferences.currency.toUpperCase()}
                         {...this.props}
                     />
 
-                    <AmountInput
-                        label={'Recipient gets in ' + Globals.preferences.currency.toUpperCase()}
-                        value={this.state.recipientGetsAmountCurrency}
-                        onChangeText={(text) => {
-                            text = (parseFloat(text) / Globals.coinPrice[Globals.preferences.currency]).toFixed(2);
-                            this.setState({
-                                recipientGetsAmountCurrency: text,
-                            });
+                    <View style={{ marginLeft: '35%' }}>
+                       <Icon.Button
+                            name="refresh"
+                            backgroundColor="#3fbf8c"
+                            onPress={() => {
+                                this.setState({
+                                    useTRTLValue: !this.state.useTRTLValue
+                                });
+                            }}
+                       >
+                            <Text>Switch to {this.state.useTRTLValue ? Globals.preferences.currency.toUpperCase() : Config.ticker}</Text>
+                        </Icon.Button>
+                    </View>
 
-                            this.convertReceivedToSent(text);
-                            this.checkErrors(text);
+                    <BottomButton
+                        title="Continue"
+                        onPress={() => {
+                            this.props.navigation.navigate(
+                                'Confirm', {
+                                    payee: this.props.navigation.state.params.payee,
+                                    amount: this.state.feeInfo,
+                                }
+                            );
                         }}
-                        marginBottom={40}
-                        currency={Globals.preferences.currency.toUpperCase()}
+                        disabled={!this.state.continueEnabled}
                         {...this.props}
                     />
 
@@ -398,7 +399,7 @@ export class TransferScreen extends React.Component {
                     />
 
                 </View>
-            </ScrollView>
+            </View>
         );
     }
 }
@@ -421,7 +422,7 @@ class AddressBook extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <List style={{
                 marginBottom: 20,
                 backgroundColor: this.props.screenProps.theme.backgroundColour
@@ -430,7 +431,7 @@ class AddressBook extends React.Component {
                     extraData={this.state.index}
                     data={this.state.payees}
                     keyExtractor={item => item.nickname}
-                    renderItem={({ item }) => (
+                    renderItem={({item}) => (
                         <ListItem
                             title={item.nickname}
                             subtitle={item.address.substr(0, 15) + '...'}
@@ -483,7 +484,7 @@ class ExistingPayees extends React.Component {
     render() {
         const noPayeesComponent =
             <View>
-                <Hr />
+                <Hr/>
                 <Text style={{
                     color: this.props.screenProps.theme.primaryColour,
                     marginTop: 10,
@@ -493,7 +494,7 @@ class ExistingPayees extends React.Component {
                 </Text>
             </View>
 
-        return (
+        return(
             <View style={{
                 width: '90%',
                 maxHeight: 385,
@@ -505,7 +506,7 @@ class ExistingPayees extends React.Component {
                     Address Book
                 </Text>
 
-                {Globals.payees.length > 0 ? <AddressBook {...this.props} /> : noPayeesComponent}
+                {Globals.payees.length > 0 ? <AddressBook {...this.props}/> : noPayeesComponent}
             </View>
         );
     }
@@ -515,7 +516,7 @@ export class NewPayeeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerRight: (
-                <CrossButton navigation={navigation} />
+                <CrossButton navigation={navigation}/>
             ),
         }
     };
@@ -611,7 +612,7 @@ export class NewPayeeScreen extends React.Component {
     }
 
     checkErrors() {
-        (async () => {
+        (async() => {
 
             const [addressValid, addressError] = await this.validAddress(this.state.address);
             const [paymentIDValid, paymentIDError] = this.validPaymentID(this.state.paymentID);
@@ -628,7 +629,7 @@ export class NewPayeeScreen extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <View style={{
                 backgroundColor: this.props.screenProps.theme.backgroundColour,
                 flex: 1,
@@ -709,7 +710,7 @@ export class NewPayeeScreen extends React.Component {
                         <Button
                             title='Scan QR Code'
                             onPress={() => {
-                                this.props.navigation.navigate('QrScanner', { setAddress: this.setAddressFromQrCode.bind(this) });
+                                this.props.navigation.navigate('QrScanner', { setAddress: this.setAddressFromQrCode.bind(this) } );
                             }}
                             titleStyle={{
                                 color: this.props.screenProps.theme.primaryColour,
@@ -804,7 +805,7 @@ class ModifyMemo extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <Input
                 containerStyle={{
                     width: '100%',
@@ -835,7 +836,7 @@ export class ConfirmScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerRight: (
-                <CrossButton navigation={navigation} />
+                <CrossButton navigation={navigation}/>
             ),
         }
     };
@@ -850,7 +851,7 @@ export class ConfirmScreen extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <View style={{ flex: 1, backgroundColor: this.props.screenProps.theme.backgroundColour }}>
                 <View style={{
                     alignItems: 'flex-start',
@@ -916,7 +917,7 @@ export class ConfirmScreen extends React.Component {
                             </View>
                         </View>
 
-                        <View style={{ borderWidth: 0.7, borderColor: 'lightgrey', width: '100%' }} />
+                        <View style={{ borderWidth: 0.7, borderColor: 'lightgrey', width: '100%' }}/>
                     </View>
 
                     <View style={{
@@ -971,7 +972,7 @@ export class ConfirmScreen extends React.Component {
                             />
                         </View>
 
-                        <View style={{ borderWidth: 0.7, borderColor: 'lightgrey', width: '100%' }} />
+                        <View style={{ borderWidth: 0.7, borderColor: 'lightgrey', width: '100%' }}/>
 
                         <Text style={{ marginBottom: 5, marginTop: 20, color: this.props.screenProps.theme.slightlyMoreVisibleColour }}>
                             Address
@@ -1099,7 +1100,7 @@ export class ConfirmScreen extends React.Component {
                                 subtitle: 'to confirm the transaction',
                                 finishFunction: () => {
                                     this.props.navigation.dispatch(navigateWithDisabledBack('ChoosePayee'));
-                                    this.props.navigation.navigate('SendTransaction', { ...params });
+                                    this.props.navigation.navigate('SendTransaction', {...params});
                                 }
                             });
                         } else {
@@ -1107,7 +1108,7 @@ export class ConfirmScreen extends React.Component {
                             this.props.navigation.dispatch(navigateWithDisabledBack('ChoosePayee'));
 
                             /* Then send the actual transaction */
-                            this.props.navigation.navigate('SendTransaction', { ...params });
+                            this.props.navigation.navigate('SendTransaction', {...params});
                         }
                     }}
                     {...this.props}
@@ -1131,7 +1132,7 @@ export class ChoosePayeeScreen extends React.Component {
                 />
             ),
             headerRight: (
-                <CrossButton navigation={navigation} />
+                <CrossButton navigation={navigation}/>
             ),
         }
     };
@@ -1144,7 +1145,7 @@ export class ChoosePayeeScreen extends React.Component {
                 'Cannot send transaction',
                 error,
                 [
-                    { text: 'OK' },
+                    {text: 'OK'},
                 ]
             );
         }
@@ -1294,7 +1295,7 @@ export class ChoosePayeeScreen extends React.Component {
     }
 
     render() {
-        return (
+        return(
             <View style={{
                 backgroundColor: this.props.screenProps.theme.backgroundColour,
                 flex: 1,
@@ -1377,9 +1378,9 @@ export class ChoosePayeeScreen extends React.Component {
                         </View>
                     </TouchableWithoutFeedback>
 
-                    <Hr />
+                    <Hr/>
 
-                    <ExistingPayees {...this.props} />
+                    <ExistingPayees {...this.props}/>
                 </View>
             </View>
         );
@@ -1533,7 +1534,7 @@ export class SendTransactionScreen extends React.Component {
 
             </View>;
 
-        return (
+        return(
             <View style={{ flex: 1, backgroundColor: this.props.screenProps.theme.backgroundColour }}>
                 <View style={{
                     flex: 1,
