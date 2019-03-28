@@ -225,8 +225,6 @@ export class TransferScreen extends React.Component {
             result = feeInfo.remaining;
         }
 
-        console.log(Number(result) * Globals.coinPrice[Globals.preferences.currency]);
-
         this.setState({
             recipientGetsAmount: result,
             youSendAmountCurrency: (Number(amount) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8),
@@ -249,8 +247,6 @@ export class TransferScreen extends React.Component {
             feeInfo = addFee(numAmount);
             result = feeInfo.original;
         }
-
-        console.log((Number(result) * Globals.coinPrice[Globals.preferences.currency]).toFixed(8));
 
         this.setState({
             youSendAmount: result,
