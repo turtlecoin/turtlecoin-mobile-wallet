@@ -1,6 +1,6 @@
 // Copyright (C) 2018, Zpalmtree
 //
-// Please see the included LICENSE file for more information.
+// Please see the included LICENSE file for more information
 
 export const Themes = {
     lightMode: {
@@ -10,25 +10,25 @@ export const Themes = {
         backgroundColour: 'white',
 
         /**
-         * The primary colour used by the wallet, for TurtleCoin this is green
+         * The primary colour used by the wallet, for Kegcoin this is grey
          */
-        primaryColour: '#40C18E',
+        primaryColour: '#3A444C',
 
         /**
          * Colour for the background circles on the pin page
          */
-        pinCodeBackgroundColour: '#D8F3E8',
+        pinCodeBackgroundColour: '#9EBBD1',
 
         /**
          * Colour for the pin code numbers
          * Note that when you click them, a different theme is applied.
          */
-        pinCodeForegroundColour: '#40C18E',
+        pinCodeForegroundColour: '#3A444C',
 
         /**
-         * We chose to use a darker green here. It is very rarely used.
+         * We chose to use a darker shade here. It is very rarely used.
          */
-        secondaryColour: '#00853D',
+        secondaryColour: '#1B2023',
 
         /**
          * Terrible name, lol. This is used things which shouldn't pop out
@@ -75,28 +75,28 @@ export const Themes = {
         /**
          * Background colour for every component
          */
-        backgroundColour: '#2C2F33',
+        backgroundColour: '#000000',
 
         /**
-         * The primary colour used by the wallet, for TurtleCoin this is green
+         * The primary colour used by the wallet, for Kegcoin this is grey
          */
-        primaryColour: '#40C18E',
+        primaryColour: '#3A444C',
 
         /**
          * Colour for the background circles on the pin page
          */
-        pinCodeBackgroundColour: 'gray',
+        pinCodeBackgroundColour: '#9EBBD1',
 
         /**
          * Colour for the pin code numbers
          * Note that when you click them, a different theme is applied.
          */
-        pinCodeForegroundColour: 'white',
+        pinCodeForegroundColour: '#3A444C',
 
         /**
-         * We chose to use a darker green here. It is very rarely used.
+         * We chose to use a darker shade here. It is very rarely used.
          */
-        secondaryColour: '#00853D',
+        secondaryColour: '#1B2023',
 
         /**
          * Terrible name, lol. This is used things which shouldn't pop out
