@@ -26,6 +26,12 @@ export default Constants = {
             symbolLocation: 'prefix',
         },
         {
+            ticker: 'keg',
+            coinName: 'Kegcoin',
+            symbol: '₭',
+            symbolLocation: 'prefix',
+        }
+        {
             ticker: 'aud',
             coinName: 'Australian Dollar',
             symbol: '$',
@@ -103,7 +109,8 @@ export default Constants = {
             symbol: '$',
             symbolLocation: 'prefix',
         },
+        
     ],
 
-    numTransactionsPerPage: 20,
+    numTransactionsPerPage: 15,
 };
