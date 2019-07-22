@@ -15,12 +15,12 @@ const Config = {
     /**
      * If you can't figure this one out, I don't have high hopes
      */
-    coinName: 'TurtleCoin',
+    coinName: 'Kegcoin',
 
     /**
      * Prefix for URI encoded addresses
      */
-    uriPrefix: 'turtlecoin://',
+    uriPrefix: 'kegcoin://',
 
     /**
      * How often to save the wallet, in milliseconds
@@ -28,16 +28,16 @@ const Config = {
     walletSaveFrequency: 60 * 1000,
 
     /**
-     * The amount of decimal places your coin has, e.g. TurtleCoin has two
+     * The amount of decimal places your coin has, e.g. Kegcoin has 8
      * decimals
      */
-    decimalPlaces: 2,
+    decimalPlaces: 8,
 
     /**
      * The address prefix your coin uses - you can find this in CryptoNoteConfig.h.
-     * In TurtleCoin, this converts to TRTL
+     * In Kegcoin, this converts to K
      */
-    addressPrefix: 3914525,
+    addressPrefix: 111,
 
     /**
      * Request timeout for daemon operations in milliseconds
@@ -47,7 +47,7 @@ const Config = {
     /**
      * The block time of your coin, in seconds
      */
-    blockTargetTime: 30,
+    blockTargetTime: 20,
 
     /**
      * How often to process blocks, in millseconds
@@ -72,39 +72,35 @@ const Config = {
     blocksPerTick: 1,
 
     /**
-     * Your coins 'ticker', generally used to refer to the coin, i.e. 123 TRTL
+     * Your coins 'ticker', generally used to refer to the coin, i.e. 123 KEG
      */
-    ticker: 'TRTL',
+    ticker: 'KEG',
 
     /**
      * Most people haven't mined any blocks, so lets not waste time scanning
      * them
      */
-    scanCoinbaseTransactions: false,
+    scanCoinbaseTransactions: true,
 
     /**
      * The minimum fee allowed for transactions, in ATOMIC units
      */
-    minimumFee: 10,
+    minimumFee: 1000000,
 
     /**
      * Mapping of height to mixin maximum and mixin minimum
      */
     mixinLimits: new MixinLimits([
-        /* Height: 440,000, minMixin: 0, maxMixin: 100, defaultMixin: 3 */
-        new MixinLimit(440000, 0, 100, 3),
+        /* Static mixin of 9 */
+        new MixinLimit(0, 9),
 
-        /* At height of 620000, static mixin of 7 */
-        new MixinLimit(620000, 7),
-
-        /* At height of 800000, static mixin of 3 */
-        new MixinLimit(800000, 3),
-    ], 3 /* Default mixin of 3 before block 440,000 */),
+    
+    ], 
 
     /**
      * The length of a standard address for your coin
      */
-    standardAddressLength: 99,
+    standardAddressLength: 96,
 
     /**
      * The length of an integrated address for your coin - It's the same as
@@ -113,7 +109,7 @@ const Config = {
      * chunks of 8 chars at once into blocks of 11 chars, we can calculate
      * this automatically
      */
-    integratedAddressLength: 99 + ((64 * 11) / 8),
+    integratedAddressLength: 96 + ((64 * 11) / 8),
 
     /**
      * Use our native func instead of JS slowness
@@ -163,12 +159,12 @@ const Config = {
     /**
      * Fee to take on all transactions, in percentage
      */
-    devFeePercentage: 0.5,
+    devFeePercentage: 0.2,
 
     /**
      * Address to send dev fee to
      */
-    devFeeAddress: 'TRTLv1E3ThL66fHthRHyzPSDqeUazPA9eBQYkuRnp8svKgvdoecQtqhSRaD59CEuH8XnYsw3YGtw1RWsQSqtHLqUXu4tvk9LryR',
+    devFeeAddress:''',
 
     /**
      * Base url for price API
@@ -177,40 +173,40 @@ const Config = {
      * you just set this to an empty string. If you have another API you want
      * it to support, you're going to have to modify the code in Currency.js.
      */
-    priceApiLink: 'https://api.coingecko.com/api/v3/simple/price',
-
+     
+    priceApiLink: 'https://tradecx.io/api/tickers/kegbtc',
     /**
      * Default daemon to use. Can either be a BlockchainCacheApi(baseURL, SSL),
      * or a ConventionalDaemon(url, port).
      */
-    defaultDaemon: new Daemon('blockapi.turtlepay.io', 443),
+    defaultDaemon: new Daemon('mine2.live', 5050),
 
     /**
      * A link to where a bug can be reported for your wallet. Please update
      * this if you are forking, so we don't get reported bugs for your wallet...
      *
      */
-    repoLink: 'https://github.com/turtlecoin/turtlecoin-mobile-wallet/issues',
+    repoLink: 'https://github.com/kegcoin-foundation/kegcoin-mobile-wallet/issues',
 
     /**
      * This only controls the name in the settings screen.
      */
-    appName: 'TonChan',
+    appName: 'KegWallet',
 
     /**
      * Slogan phrase during wallet CreateScreen
      */
-    sloganCreateScreen: 'Fast. Safe. Easy.',
+    sloganCreateScreen: 'Paving the future for you.',
 
     /**
      * Displayed in the settings screen
      */
-    appVersion: 'v1.0.0',
+    appVersion: 'v0.1.0',
 
     /**
      * Base URL for us to chuck a hash on the end, and find a transaction
      */
-    explorerBaseURL: 'https://explorer.turtlecoin.lol/?search=',
+    explorerBaseURL: 'https://explore.kegcoin.network/?search=',
 
     /**
      * A link to your app on the Apple app store. Currently blank because we
@@ -221,7 +217,7 @@ const Config = {
     /**
      * A link to your app on the google play store
      */
-    googlePlayLink: 'https://play.google.com/store/apps/details?id=com.tonchan',
+    googlePlayLink: 'https://play.google.com/store/apps/details?id=com.kegwallet',
 };
 
 module.exports = Config;
